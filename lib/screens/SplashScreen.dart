@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     _timer = Timer(Duration(seconds: 3), () {
       final routerDelegate = Router.of(context).routerDelegate as AppRouterDelegate;
-      //routerDelegate.setNewRoutePath(RouteSettings(name: '/login'));
+      routerDelegate.setNewRoutePath(RouteSettings(name: '/login'));
     });
   }
 

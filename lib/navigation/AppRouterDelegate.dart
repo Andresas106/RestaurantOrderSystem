@@ -34,6 +34,8 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
         if(_currentRoute?.name == '/')
           CustomTransitionPage(key: ValueKey('SplashScreen'),
               child: SplashScreen()),
+        if(_currentRoute?.name == '/login')
+          CustomTransitionPage(key: ValueKey('LoginScreen'), child: LoginScreen())
       ],
       onPopPage: (route, result) {
         if (!route.didPop(result)) {

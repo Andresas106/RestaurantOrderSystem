@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:tfg/provider/auth_provider_intern.dart';
 
 import 'navigation/AppRouteInformationParser.dart';
 import 'navigation/AppRouterDelegate.dart';
@@ -21,13 +23,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      theme: ThemeData(
+    return ChangeNotifierProvider(
+      create: (context) => AuthProviderIntern(),
+      child: MaterialApp.router(
+        theme: ThemeData(
           primarySwatch: Colors.blue,
-          //fontFamily: 'Roboto'
+        ),
+        routerDelegate: AppRouterDelegate(),
+        routeInformationParser: AppRouteInformationParser(),
       ),
-      routerDelegate: _routerDelegate,
-      routeInformationParser: _routerInformationParser,
     );
   }
 }
