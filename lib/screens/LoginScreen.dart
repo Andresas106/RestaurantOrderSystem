@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tfg/navigation/AppRouterDelegate.dart';
 import '../provider/auth_provider_intern.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,11 +17,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> login(BuildContext context) async {
     try {
-      await Provider.of<AuthProviderIntern>(context, listen: false)
-          .signIn(emailController.text, passwordController.text);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login successful')),
-      );
+      final authProvider = Provider.of<AuthProviderIntern>(context, listen: false);
+      await authProvider.signIn(emailController.text, passwordController.text);
+
+      if(authProvider.userCustom != null) {
+        final uid = authProvider.userCustom!.uid;
+        final role = authProvider.userCustom!.role;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login successful')),
+        );
+
+        Future.delayed(Duration(seconds: 1), () {
+          final routerDelegate = Router.of(context).routerDelegate as AppRouterDelegate;
+          routerDelegate.setNewRoutePath(
+            RouteSettings(name: '/home', arguments: {'uid': uid, 'role': role}), // Pasamos uid y rol
+          );
+        });
+      }
+      else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: The role couldn\'t be charged')),
+        );
+      }
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),

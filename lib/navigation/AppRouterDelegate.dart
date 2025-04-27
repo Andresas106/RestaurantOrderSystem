@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:tfg/screens/HomeScreen.dart';
 import 'package:tfg/screens/SplashScreen.dart';
 
 import '../screens/LoginScreen.dart';
@@ -35,7 +36,12 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
           CustomTransitionPage(key: ValueKey('SplashScreen'),
               child: SplashScreen()),
         if(_currentRoute?.name == '/login')
-          CustomTransitionPage(key: ValueKey('LoginScreen'), child: LoginScreen())
+          CustomTransitionPage(key: ValueKey('LoginScreen'), child: LoginScreen()),
+        if(_currentRoute?.name == '/home')
+          if (_currentRoute?.arguments != null)
+          CustomTransitionPage(key: ValueKey('HomeScreen'), child: HomeScreen(
+              uid: (_currentRoute?.arguments as Map<String, dynamic>)['uid'],
+              role: (_currentRoute?.arguments as Map<String, dynamic>)['role']))
       ],
       onPopPage: (route, result) {
         if (!route.didPop(result)) {
