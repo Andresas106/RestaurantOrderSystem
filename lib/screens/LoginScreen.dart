@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final authProvider = Provider.of<AuthProviderIntern>(context, listen: false);
       await authProvider.signIn(emailController.text, passwordController.text);
 
-      Future.delayed(Duration(milliseconds: 250), () {
+      Future.delayed(Duration(milliseconds: 500), () {
         if(authProvider.userCustom != null) {
           final uid = authProvider.userCustom!.uid;
           final role = authProvider.userCustom!.role;
