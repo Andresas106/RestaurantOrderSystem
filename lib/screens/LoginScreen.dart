@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue.shade900, Colors.black],
+            colors: [Colors.blue.shade700, Colors.black],
           ),
         ),
         child: Center(

@@ -29,8 +29,9 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        routerDelegate: AppRouterDelegate(),
-        routeInformationParser: AppRouteInformationParser(),
+        routerDelegate: _routerDelegate,
+        routeInformationParser: _routerInformationParser,
+        backButtonDispatcher: RootBackButtonDispatcher(),
       ),
     );
   }
