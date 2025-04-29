@@ -40,16 +40,12 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
         ),
       );
     } else if (_currentRoute?.name == '/login') {
-      pages.addAll([
-        CustomTransitionPage(
-          key: ValueKey('SplashScreen'),
-          child: SplashScreen(),
-        ),
+      pages.add(
         CustomTransitionPage(
           key: ValueKey('LoginScreen'),
           child: LoginScreen(),
         ),
-      ]);
+      );
     } else if (_currentRoute?.name == '/home') {
       final args = _currentRoute?.arguments as Map<String, dynamic>?;
       if (args != null) {
