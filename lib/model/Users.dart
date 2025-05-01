@@ -3,29 +3,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 class Users {
   final String uid;
   final String role;
+  final String? email; // Email opcional
 
   Users({
     required this.uid,
     required this.role,
+    this.email
   });
 
   factory Users.fromFirestore(Map<String, dynamic> data) {
     return Users(
       uid: data['uid'],
       role: data['role'] ?? '',
+      email: data['email'],
     );
-  }
-
-  // Método que obtiene el email desde FirebaseAuth
-  Future<String?> getEmail() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    return user?.email;
   }
 
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
       'role': role,
+      if(email != null) 'email': email,
     };
   }
 }

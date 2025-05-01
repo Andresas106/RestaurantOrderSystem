@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,30 +21,42 @@ class _LoginScreenState extends State<LoginScreen> {
       final authProvider = Provider.of<AuthProviderIntern>(context, listen: false);
       await authProvider.signIn(emailController.text, passwordController.text);
 
+      final User? firebaseUser = FirebaseAuth.instance.currentUser;
+      if (firebaseUser == null) throw Exception("No user found after login");
+
+      final uid = firebaseUser.uid;
+
+      // Buscar el documento por el campo 'uid'
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('uid', isEqualTo: uid)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        // Cerrar sesión si no existe en Firestore
+        authProvider.signOut();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Access denied: Your account is not in the system')),
+        );
+        return;
+      }
+
+      // Extraer el rol
+      final userData = querySnapshot.docs.first.data();
+      final role = userData['role'] ?? '';
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login successful')),
+      );
+
       Future.delayed(Duration(milliseconds: 500), () {
-        if(authProvider.userCustom != null) {
-          final uid = authProvider.userCustom!.uid;
-          final role = authProvider.userCustom!.role;
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Login successful')),
-          );
-
-          Future.delayed(Duration(milliseconds: 500), () {
-            final routerDelegate = Router.of(context).routerDelegate as AppRouterDelegate;
-            routerDelegate.setNewRoutePath(
-              RouteSettings(name: '/home', arguments: {'uid': uid, 'role': role}), // Pasamos uid y rol
-            );
-          });
-        }
-        else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: The role couldn\'t be charged')),
-          );
-        }
+        final routerDelegate = Router.of(context).routerDelegate as AppRouterDelegate;
+        routerDelegate.setNewRoutePath(
+          RouteSettings(name: '/home', arguments: {'uid': uid, 'role': role}),
+        );
       });
-
-
 
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
