@@ -1,2 +1,2 @@
 # RestaurantOrderSystem
-This project s my final degree work
+This project s my final degree project
