@@ -47,7 +47,7 @@ class AuthProviderIntern with ChangeNotifier {
       if (querySnapshot.docs.isNotEmpty) {
         // Si hay al menos un documento que coincide
         DocumentSnapshot doc = querySnapshot.docs.first;
-        _userCustom = Users.fromFirestore(doc.data() as Map<String, dynamic>, uid);
+        _userCustom = Users.fromFirestore(doc.data() as Map<String, dynamic>);
       } else {
         print('No se encontró el usuario en Firestore');
       }

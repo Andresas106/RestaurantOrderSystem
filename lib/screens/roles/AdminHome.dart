@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../navigation/AppRouterDelegate.dart';
+
 class AdminHome extends StatelessWidget {
   final String uid;
+  final String role;
 
-  const AdminHome({super.key, required this.uid});
+  const AdminHome({super.key, required this.uid, required this.role});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +68,12 @@ class AdminHome extends StatelessWidget {
   Widget _buildButton(BuildContext context,
       {required String label, required IconData icon, required String routeName}) {
     return ElevatedButton.icon(
-      onPressed: () => Navigator.pushNamed(context, routeName),
+      onPressed: () {
+        final routerDelegate = Router.of(context).routerDelegate as AppRouterDelegate;
+        routerDelegate.setNewRoutePath(
+          RouteSettings(name: routeName, arguments: {'uid': uid, 'role': role}),
+        );
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blue.shade700,
         foregroundColor: Colors.white,

@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tfg/screens/HomeScreen.dart';
 import 'package:tfg/screens/SplashScreen.dart';
-
-import '../screens/LoginScreen.dart';
-
+import 'package:tfg/screens/LoginScreen.dart';
+import 'package:tfg/screens/management/UserManagement.dart';
 
 class AppRouterDelegate extends RouterDelegate<RouteSettings>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<RouteSettings> {
@@ -32,6 +31,7 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
   Widget build(BuildContext context) {
     List<Page> pages = [];
 
+    // Splash Screen
     if (_currentRoute?.name == '/') {
       pages.add(
         CustomTransitionPage(
@@ -39,14 +39,20 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
           child: SplashScreen(),
         ),
       );
-    } else if (_currentRoute?.name == '/login') {
+    }
+
+    // Login Screen
+    else if (_currentRoute?.name == '/login') {
       pages.add(
         CustomTransitionPage(
           key: ValueKey('LoginScreen'),
           child: LoginScreen(),
         ),
       );
-    } else if (_currentRoute?.name == '/home') {
+    }
+
+    // Home Screen
+    else if (_currentRoute?.name == '/home') {
       final args = _currentRoute?.arguments as Map<String, dynamic>?;
       if (args != null) {
         pages.addAll([
@@ -62,20 +68,41 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
       }
     }
 
+    // User Management Screen
+    else if (_currentRoute?.name == '/user-management') {
+      final args = _currentRoute?.arguments as Map<String, dynamic>?;
+      if (args != null) {
+        pages.addAll([
+          CustomTransitionPage(
+            key: ValueKey('HomeScreen'),
+            child: HomeScreen(uid: args['uid'], role: args['role']),
+          ),
+          CustomTransitionPage(
+            key: ValueKey('UserManagement'),
+            child: UserManagement(),
+          ),
+        ]);
+      }
+    }
 
     return Navigator(
       key: navigatorKey,
       pages: pages,
       onPopPage: (route, result) {
-        if (!route.didPop(result)) {
-          return false;
-        }
+        if (!route.didPop(result)) return false;
 
-        if(_currentRoute?.name == '/home') {
+        if (_currentRoute?.name == '/home') {
           _setNewRoutePath(RouteSettings(name: '/login'));
-          print("Se ejecuta");
-        } else if(_currentRoute?.name == '/login') {
-          SystemNavigator.pop();
+        } else if (_currentRoute?.name == '/login') {
+          SystemNavigator.pop(); // Cierra la app
+        } else if (_currentRoute?.name == '/user-management') {
+          final args = _currentRoute?.arguments as Map<String, dynamic>?;
+          if (args != null) {
+            _setNewRoutePath(RouteSettings(name: '/home', arguments: args));
+          } else {
+            // fallback seguro si no hay argumentos
+            _setNewRoutePath(RouteSettings(name: '/login'));
+          }
         }
 
         return true;
@@ -87,16 +114,17 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
 class CustomTransitionPage extends Page {
   final Widget child;
 
-  const CustomTransitionPage({required LocalKey key,required  this.child})
-  : super(key: key);
+  const CustomTransitionPage({required LocalKey key, required this.child})
+      : super(key: key);
+
   @override
   Route createRoute(BuildContext context) {
     return PageRouteBuilder(
-        settings: this,
-        pageBuilder: (context, animation, secondaryAnimation) => child,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child,);
-        }
+      settings: this,
+      pageBuilder: (context, animation, secondaryAnimation) => child,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
     );
   }
 }

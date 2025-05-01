@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildHomeContent() {
     switch(widget.role) {
       case 'admin':
-        return AdminHome(uid: widget.uid);
+        return AdminHome(uid: widget.uid, role: widget.role);
       case 'chef':
         return ChefHome(uid: widget.uid);
       case 'waiter':
