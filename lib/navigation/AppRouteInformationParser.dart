@@ -15,6 +15,10 @@ class AppRouteInformationParser extends RouteInformationParser<RouteSettings> {
     if(uri.pathSegments.length == 1 && uri.pathSegments[0] == 'user-management') {
       return RouteSettings(name: '/user-management');
     }
+
+    if(uri.pathSegments.length == 1 && uri.pathSegments[0] == 'table-management') {
+      return RouteSettings(name: '/table-management');
+    }
     //user-management
 
     return RouteSettings(name: '/');
@@ -40,6 +44,10 @@ class AppRouteInformationParser extends RouteInformationParser<RouteSettings> {
 
     if (configuration.name == '/user-management') {
       return RouteInformation(uri: Uri.parse('/user-management'));
+    }
+
+    if(configuration.name == '/table-management') {
+      return RouteInformation(uri: Uri.parse('/table-management'));
     }
 
     return RouteInformation(uri: Uri.parse(configuration.name ?? '/'));

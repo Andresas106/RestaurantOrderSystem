@@ -8,6 +8,8 @@ import 'package:tfg/screens/SplashScreen.dart';
 import 'package:tfg/screens/LoginScreen.dart';
 import 'package:tfg/screens/management/UserManagement.dart';
 
+import '../screens/management/TableManagement.dart';
+
 class AppRouterDelegate extends RouterDelegate<RouteSettings>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<RouteSettings> {
   final GlobalKey<NavigatorState> navigatorKey;
@@ -85,6 +87,22 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
       }
     }
 
+    else if(_currentRoute?.name == '/table-management') {
+      final args = _currentRoute?.arguments as Map<String, dynamic>?;
+      if(args != null) {
+        pages.addAll([
+          CustomTransitionPage(
+            key: ValueKey('HomeScreen'),
+            child: HomeScreen(uid: args['uid'], role: args['role']),
+          ),
+          CustomTransitionPage(
+            key: ValueKey('UserManagement'),
+            child: TableManagement(),
+          ),
+        ]);
+      }
+    }
+
     return Navigator(
       key: navigatorKey,
       pages: pages,
@@ -96,6 +114,15 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
         } else if (_currentRoute?.name == '/login') {
           SystemNavigator.pop(); // Cierra la app
         } else if (_currentRoute?.name == '/user-management') {
+          final args = _currentRoute?.arguments as Map<String, dynamic>?;
+          if (args != null) {
+            _setNewRoutePath(RouteSettings(name: '/home', arguments: args));
+          } else {
+            // fallback seguro si no hay argumentos
+            _setNewRoutePath(RouteSettings(name: '/login'));
+          }
+        }
+        else if(_currentRoute?.name == '/table-management') {
           final args = _currentRoute?.arguments as Map<String, dynamic>?;
           if (args != null) {
             _setNewRoutePath(RouteSettings(name: '/home', arguments: args));

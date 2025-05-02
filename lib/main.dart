@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:tfg/provider/auth_provider_intern.dart';
+import 'package:tfg/provider/table_provider_intern.dart';
 import 'package:tfg/provider/user_provider_intern.dart';
 
 import 'navigation/AppRouteInformationParser.dart';
@@ -26,8 +27,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AuthProviderIntern()),  // Mantienes el AuthProvider
-        ChangeNotifierProvider(create: (context) => UserProviderIntern()), // Añades el UserProviderIntern
+        ChangeNotifierProvider(create: (context) => AuthProviderIntern()),
+        ChangeNotifierProvider(create: (context) => UserProviderIntern()),
+        ChangeNotifierProvider(create: (context) => TableProviderIntern()..listenToTables())
       ],
       child: MaterialApp.router(
         theme: ThemeData(
