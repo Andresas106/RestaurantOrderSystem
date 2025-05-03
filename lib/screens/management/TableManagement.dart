@@ -111,7 +111,7 @@ class TableManagement extends StatelessWidget {
                         final table = tables[index];
                         return Container(
                           decoration: BoxDecoration(
-                            color: table.isFree
+                            color: table.groupId == null
                                 ? Colors.green[400]
                                 : Colors.orange[400],
                             borderRadius: BorderRadius.circular(20),
