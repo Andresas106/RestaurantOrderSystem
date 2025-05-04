@@ -21,7 +21,6 @@ class _WaiterHomeState extends State<WaiterHome> {
   Widget build(BuildContext context) {
     final tableProvider = Provider.of<TableProviderIntern>(context);
     final tables = tableProvider.tables;
-    final isLoading = tableProvider.isLoading;
 
     return Scaffold(
       body: Container(
@@ -143,6 +142,7 @@ class _WaiterHomeState extends State<WaiterHome> {
     // Lógica para actualizar Firestore con el nuevo groupId en las mesas seleccionadas
     final tableProvider = Provider.of<TableProviderIntern>(context, listen: false);
     tableProvider.updateTablesWithGroupId(groupId, selectedTables);
+    print("SelectedTables: ${selectedTables}");
 
     // Luego podrías redirigir al usuario a una página de detalle del pedido, por ejemplo.
   }

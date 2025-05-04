@@ -73,7 +73,7 @@ class TableProviderIntern with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateTablesWithGroupId(String groupId, Set<String> selectedTables) {
+  Future<void> updateTablesWithGroupId(String groupId, Set<String> selectedTables) async {
     _isLoading = true;
     notifyListeners();
 
@@ -85,9 +85,11 @@ class TableProviderIntern with ChangeNotifier {
       batch.update(docRef, {
         'group_id': groupId,
       });
+
+      await batch.commit();
     }
 
-
-
+    _isLoading = false;
+    notifyListeners();
   }
 }
