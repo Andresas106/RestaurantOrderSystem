@@ -72,4 +72,22 @@ class TableProviderIntern with ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+
+  void updateTablesWithGroupId(String groupId, Set<String> selectedTables) {
+    _isLoading = true;
+    notifyListeners();
+
+    final firebase = FirebaseFirestore.instance;
+    final batch = firebase.batch();
+
+    for (var tableId in selectedTables) {
+      final docRef = firebase.collection('tables').doc(tableId);
+      batch.update(docRef, {
+        'group_id': groupId,
+      });
+    }
+
+
+
+  }
 }
