@@ -133,7 +133,7 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
           ),
           CustomTransitionPage(
             key: ValueKey('NewOrder'),
-            child: NewOrder(groupId: args['group_id'], tables: args['tables']),
+            child: NewOrder(groupId: args['group_id'], tables: args['tables'] as Set<String>),
           ),
         ]);
       }

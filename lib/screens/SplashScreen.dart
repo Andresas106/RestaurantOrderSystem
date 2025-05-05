@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../navigation/AppRouterDelegate.dart';
 
@@ -33,24 +34,34 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
       body: Stack(
+        fit: StackFit.expand, // Esto hace que el Stack ocupe toda la pantalla
         children: [
-          SizedBox.expand(
-            child: Image.asset('assets/logo.png', fit: BoxFit.cover,),
-          ),
-          Center(
-            child: Text(
-              'Recipe Application',
-              textAlign: TextAlign.center,
-              style: textTheme.displayLarge!.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+          // Degradado
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blue.shade700, Colors.black],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
             ),
+          ),
+
+          // Imagen SVG que ocupa toda la pantalla
+          Center(
+            child: SvgPicture.asset(
+              'images/logo.svg',
+              fit: BoxFit.contain, // Esto asegura que ocupe toda la pantalla
+              colorFilter: ColorFilter.mode(
+              Colors.white, BlendMode.srcIn),
+
+              //height: 500,
+              //width: 500,
+            ),
           )
+
         ],
       ),
     );
