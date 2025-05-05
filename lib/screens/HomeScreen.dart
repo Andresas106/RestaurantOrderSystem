@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'chef':
         return ChefHome(uid: widget.uid);
       case 'waiter':
-        return WaiterHome(uid: widget.uid);
+        return WaiterHome(uid: widget.uid, role: widget.role);
       default:
         return Center(
           child: Text('Role not recognized', style: TextStyle(fontSize: 20)),

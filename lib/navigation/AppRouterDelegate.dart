@@ -9,6 +9,7 @@ import 'package:tfg/screens/LoginScreen.dart';
 import 'package:tfg/screens/management/UserManagement.dart';
 
 import '../screens/management/TableManagement.dart';
+import '../screens/orders/EditOrder.dart';
 
 class AppRouterDelegate extends RouterDelegate<RouteSettings>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<RouteSettings> {
@@ -98,6 +99,22 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
           CustomTransitionPage(
             key: ValueKey('UserManagement'),
             child: TableManagement(),
+          ),
+        ]);
+      }
+    }
+
+    else if(_currentRoute?.name == '/edit-order') {
+      final args = _currentRoute?.arguments as Map<String, dynamic>?;
+      if(args!= null) {
+        pages.addAll([
+          CustomTransitionPage(
+            key: ValueKey('HomeScreen'),
+            child: HomeScreen(uid: args['uid'], role: args['role']),
+          ),
+          CustomTransitionPage(
+            key: ValueKey('EditOrder'),
+            child: EditOrder(groupId: args['group_id']),
           ),
         ]);
       }

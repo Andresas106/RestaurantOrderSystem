@@ -85,10 +85,9 @@ class TableProviderIntern with ChangeNotifier {
       batch.update(docRef, {
         'group_id': groupId,
       });
-
-      await batch.commit();
     }
 
+    await batch.commit();
     _isLoading = false;
     notifyListeners();
   }

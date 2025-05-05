@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../navigation/AppRouterDelegate.dart';
 import '../../provider/table_provider_intern.dart';
 
 class WaiterHome extends StatefulWidget {
   final String uid;
+  final String role;
 
-  const WaiterHome({super.key, required this.uid});
+  const WaiterHome({super.key, required this.uid, required this.role});
 
   @override
   _WaiterHomeState createState() => _WaiterHomeState();
@@ -54,14 +56,23 @@ class _WaiterHomeState extends State<WaiterHome> {
 
                       return GestureDetector(
                         onTap: () {
-                          setState(() {
-                            // Si la mesa ya está seleccionada, la desmarco
-                            if (isSelected) {
-                              selectedTables.remove(table.id);
-                            } else {
-                              selectedTables.add(table.id);
-                            }
-                          });
+                          if(table.groupId != null) {
+                            final routerDelegate = Router.of(context).routerDelegate as AppRouterDelegate;
+                            routerDelegate.setNewRoutePath(
+                              RouteSettings(name: '/edit-order', arguments: {'group_id': table.groupId, 'uid': widget.uid, 'role': widget.role}),
+                            );
+                          } else {
+                            setState(() {
+                              // Si la mesa ya está seleccionada, la desmarco
+                              if (isSelected) {
+                                selectedTables.remove(table.id);
+                              } else {
+                                selectedTables.add(table.id);
+                              }
+                            });
+                          }
+
+
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -114,14 +125,14 @@ class _WaiterHomeState extends State<WaiterHome> {
                     createOrderForTables(newGroupId);
                   },
                   icon: const Icon(Icons.add_shopping_cart),
-                  label: const Text('Create Order'),
+                  label:  Text('Create Order'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2196F3),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 50),
                   ),
                 ),
               ),

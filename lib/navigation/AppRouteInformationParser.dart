@@ -19,6 +19,10 @@ class AppRouteInformationParser extends RouteInformationParser<RouteSettings> {
     if(uri.pathSegments.length == 1 && uri.pathSegments[0] == 'table-management') {
       return RouteSettings(name: '/table-management');
     }
+    if(uri.pathSegments.length == 2 && uri.pathSegments[0] == 'edit-order') {
+      String groupId = uri.pathSegments[1];
+      return RouteSettings(name: '/edit-order', arguments: {'group_id': groupId});
+    }
     //user-management
 
     return RouteSettings(name: '/');
@@ -48,6 +52,15 @@ class AppRouteInformationParser extends RouteInformationParser<RouteSettings> {
 
     if(configuration.name == '/table-management') {
       return RouteInformation(uri: Uri.parse('/table-management'));
+    }
+
+    if (configuration.name == '/edit-order') {
+      // Si la ruta es '/home', entonces toma los argumentos 'uid' y 'role' y los agrega a la URI
+      final arguments = configuration.arguments as Map<String, dynamic>?;
+      if (arguments != null) {
+        final group_id = arguments['group_id'];
+        return RouteInformation(uri: Uri.parse('/edit-order/$group_id'));
+      }
     }
 
     return RouteInformation(uri: Uri.parse(configuration.name ?? '/'));
