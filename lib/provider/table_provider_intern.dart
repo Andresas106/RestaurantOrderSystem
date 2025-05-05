@@ -44,7 +44,6 @@ class TableProviderIntern with ChangeNotifier {
     await FirebaseFirestore.instance.collection('tables').add({
       'table_number': newNumber,
       'group_id': null,
-      'isFree': true,
     });
 
     _isLoading = false;

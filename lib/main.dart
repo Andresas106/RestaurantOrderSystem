@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProviderIntern()),
         ChangeNotifierProvider(create: (context) => UserProviderIntern()),
-        ChangeNotifierProvider(create: (context) => TableProviderIntern()..listenToTables())
+        ChangeNotifierProvider(create: (context) => TableProviderIntern()..listenToTables()),
       ],
       child: MaterialApp.router(
         theme: ThemeData(

@@ -19,6 +19,8 @@ class _WaiterHomeState extends State<WaiterHome> {
   // Estado para las mesas seleccionadas
   Set<String> selectedTables = {};
 
+
+
   @override
   Widget build(BuildContext context) {
     final tableProvider = Provider.of<TableProviderIntern>(context);
@@ -57,6 +59,9 @@ class _WaiterHomeState extends State<WaiterHome> {
                       return GestureDetector(
                         onTap: () {
                           if(table.groupId != null) {
+                            setState(() {
+                              selectedTables.clear();
+                            });
                             final routerDelegate = Router.of(context).routerDelegate as AppRouterDelegate;
                             routerDelegate.setNewRoutePath(
                               RouteSettings(name: '/edit-order', arguments: {'group_id': table.groupId, 'uid': widget.uid, 'role': widget.role}),
@@ -122,7 +127,22 @@ class _WaiterHomeState extends State<WaiterHome> {
                     // Crear pedido aquí
                     // Por ejemplo, generar un nuevo groupId y actualizar las mesas seleccionadas
                     String newGroupId = generateGroupId();
-                    createOrderForTables(newGroupId);
+                    //createOrderForTables(newGroupId);
+                    Set<String> tablesOrder = selectedTables;
+                    setState(() {
+                      selectedTables.clear();
+                    });
+
+                    final routerDelegate = Router.of(context).routerDelegate as AppRouterDelegate;
+                    routerDelegate.setNewRoutePath(
+                      RouteSettings(name: '/new-order',
+                          arguments: {
+                        'group_id': newGroupId,
+                            'uid': widget.uid,
+                            'role': widget.role,
+                          'tables': tablesOrder}),
+                    );
+
                   },
                   icon: const Icon(Icons.add_shopping_cart),
                   label:  Text('Create Order'),
@@ -141,6 +161,8 @@ class _WaiterHomeState extends State<WaiterHome> {
         ),
       ),
     );
+
+
   }
 
   // Método para generar un groupId único (ejemplo simple)
