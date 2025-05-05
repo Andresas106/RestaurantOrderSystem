@@ -17,7 +17,7 @@ class WaiterHome extends StatefulWidget {
 
 class _WaiterHomeState extends State<WaiterHome> {
   // Estado para las mesas seleccionadas
-  Set<String> selectedTables = {};
+  List<String> selectedTables = [];
 
 
 
@@ -123,15 +123,12 @@ class _WaiterHomeState extends State<WaiterHome> {
                 child: ElevatedButton.icon(
                   onPressed: selectedTables.isEmpty
                       ? null
-                      : () {
+                      : () async {
                     // Crear pedido aquí
                     // Por ejemplo, generar un nuevo groupId y actualizar las mesas seleccionadas
                     String newGroupId = generateGroupId();
                     //createOrderForTables(newGroupId);
-                    Set<String> tablesOrder = selectedTables;
-                    setState(() {
-                      selectedTables.clear();
-                    });
+
 
                     final routerDelegate = Router.of(context).routerDelegate as AppRouterDelegate;
                     routerDelegate.setNewRoutePath(
@@ -140,8 +137,15 @@ class _WaiterHomeState extends State<WaiterHome> {
                         'group_id': newGroupId,
                             'uid': widget.uid,
                             'role': widget.role,
-                          'tables': tablesOrder}),
+                          'tables': selectedTables}),
                     );
+
+                    // Agregar un pequeño retraso antes de limpiar el estado
+                    await Future.delayed(const Duration(milliseconds: 100));
+
+                    setState(() {
+                      selectedTables.clear();
+                    });
 
                   },
                   icon: const Icon(Icons.add_shopping_cart),

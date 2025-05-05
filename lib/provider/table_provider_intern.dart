@@ -72,7 +72,7 @@ class TableProviderIntern with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateTablesWithGroupId(String groupId, Set<String> selectedTables) async {
+  Future<void> updateTablesWithGroupId(String groupId, List<String> selectedTables) async {
     _isLoading = true;
     notifyListeners();
 

@@ -23,9 +23,9 @@ class AppRouteInformationParser extends RouteInformationParser<RouteSettings> {
       String groupId = uri.pathSegments[1];
       return RouteSettings(name: '/edit-order', arguments: {'group_id': groupId});
     }
-    if(uri.pathSegments.length == 3 && uri.pathSegments[0] == 'new-order') {
+    if (uri.pathSegments.length == 2 && uri.pathSegments[0] == 'new-order') {
       String groupId = uri.pathSegments[1];
-      String tables = uri.pathSegments[2];
+      List<String> tables = uri.queryParameters['tables']?.split(',') ?? []; // Dividir las mesas de la query string
       return RouteSettings(name: '/new-order', arguments: {'group_id': groupId, 'tables': tables});
     }
     //user-management
@@ -69,12 +69,15 @@ class AppRouteInformationParser extends RouteInformationParser<RouteSettings> {
     }
 
     if (configuration.name == '/new-order') {
-      // Si la ruta es '/home', entonces toma los argumentos 'uid' y 'role' y los agrega a la URI
       final arguments = configuration.arguments as Map<String, dynamic>?;
+
       if (arguments != null) {
-        final group_id = arguments['group_id'];
-        String tables = arguments['tables'];
-        return RouteInformation(uri: Uri.parse('/new-order/$group_id/$tables'));
+        final groupId = arguments['group_id'];
+        final tables = arguments['tables'] as List<String>;
+
+        // Convertir List<String> a una cadena separada por comas
+        final tablesQuery = tables.join(',');
+        return RouteInformation(uri: Uri.parse('/new-order/$groupId?tables=$tablesQuery'));
       }
     }
 
