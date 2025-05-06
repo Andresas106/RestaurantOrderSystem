@@ -6,9 +6,11 @@ import '../model/Tables.dart';
 class TableProviderIntern with ChangeNotifier {
   final List<Tables> _tables = [];
   bool _isLoading = false;
+  List<Tables> _selectedTables = [];
 
   List<Tables> get tables => _tables;
   bool get isLoading => _isLoading;
+  List<Tables> get selectedTables => _selectedTables;
 
   /// Escucha los cambios en tiempo real
   void listenToTables() {
@@ -89,5 +91,26 @@ class TableProviderIntern with ChangeNotifier {
     await batch.commit();
     _isLoading = false;
     notifyListeners();
+  }
+
+  Future<void> selectTablesOrder(List<String> selectedTables) async {
+    _isLoading = true;
+    notifyListeners();
+
+    final firebase = FirebaseFirestore.instance;
+
+    // Consulta todas las mesas con IDs en selectedTables
+    final tablesQuery = await firebase
+        .collection('tables')
+        .where(FieldPath.documentId, whereIn: selectedTables)
+        .get();
+
+    _selectedTables = tablesQuery.docs.map((doc) {
+        return Tables.fromMap(doc.id, doc.data());
+    }).toList();
+
+    _isLoading = false;
+    notifyListeners();
+
   }
 }
