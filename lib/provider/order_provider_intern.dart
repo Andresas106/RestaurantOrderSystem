@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:tfg/model/Dishes.dart';
 
-class OrderProvider with ChangeNotifier {
+class OrderProviderIntern with ChangeNotifier {
   final Map<Dishes, int> _items = {};
 
   Map<Dishes, int> get items => _items;

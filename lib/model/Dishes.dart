@@ -33,7 +33,7 @@ class Dishes {
         imageUrl: data['imageUrl'],
         name: data['name'],
         prepTime: data['prepTime'],
-        price: data['price'],
+        price: (data['price'] as num).toDouble(),
         totalTime: data['totalTime'],
         createdAt: data['createdAt'],
         updatedAt: data['updatedAt'] as Timestamp?);

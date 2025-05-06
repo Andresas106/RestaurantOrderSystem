@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../navigation/AppRouterDelegate.dart';
 
@@ -49,16 +48,13 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ),
 
-          // Imagen SVG que ocupa toda la pantalla
+          // Imagen PNG que ocupa toda la pantalla
           Center(
-            child: SvgPicture.asset(
-              'images/logo.svg',
-              fit: BoxFit.contain, // Esto asegura que ocupe toda la pantalla
-              colorFilter: ColorFilter.mode(
-              Colors.white, BlendMode.srcIn),
-
-              //height: 500,
-              //width: 500,
+            child: Image.asset(
+              'images/logo.png',
+              fit: BoxFit.contain,
+              color: Colors.white,
+              colorBlendMode: BlendMode.srcIn,
             ),
           )
 

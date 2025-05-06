@@ -1,18 +1,16 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tfg/model/Categories.dart';
 import 'package:tfg/model/Dishes.dart';
 
-class MenuProvider with ChangeNotifier {
+class MenuProviderIntern with ChangeNotifier {
   final List<Dishes> _dishes = [];
   final List<Categories> _categories = [];
 
   List<Dishes> get dishes => _dishes;
   List<Categories> get categories => _categories;
 
-  MenuProvider() {
+  MenuProviderIntern() {
     _fetchCategories();
     _fetchDishes();
   }

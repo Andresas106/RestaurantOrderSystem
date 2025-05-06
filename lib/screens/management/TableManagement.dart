@@ -26,7 +26,10 @@ class TableManagement extends StatelessWidget {
           ),
         ),
         backgroundColor: Colors.blue.shade800,
-        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(

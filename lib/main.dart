@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:tfg/provider/auth_provider_intern.dart';
+import 'package:tfg/provider/menu_provider_intern.dart';
+import 'package:tfg/provider/order_provider_intern.dart';
 import 'package:tfg/provider/table_provider_intern.dart';
 import 'package:tfg/provider/user_provider_intern.dart';
 
@@ -30,6 +32,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => AuthProviderIntern()),
         ChangeNotifierProvider(create: (context) => UserProviderIntern()),
         ChangeNotifierProvider(create: (context) => TableProviderIntern()..listenToTables()),
+        ChangeNotifierProvider(create: (context) => MenuProviderIntern()),
+        ChangeNotifierProvider(create: (context) => OrderProviderIntern()),
       ],
       child: MaterialApp.router(
         theme: ThemeData(
