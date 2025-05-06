@@ -58,7 +58,9 @@ class _NewOrderState extends State<NewOrder> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: ,
+        child: Column(
+          
+        ),
       ),
     );
 
