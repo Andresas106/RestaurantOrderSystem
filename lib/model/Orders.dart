@@ -3,7 +3,7 @@ import 'package:tfg/model/OrderDishes.dart';
 
 import 'Dishes.dart';
 
-class Order {
+class Orders {
   final String id;
   final String groupId;
   final String waiterId;
@@ -14,7 +14,7 @@ class Order {
   final DateTime? servedIn;
   final List<OrderDishes> dishes;
 
-  Order({
+  Orders({
     required this.id,
     required this.groupId,
     required this.waiterId,
@@ -39,7 +39,7 @@ class Order {
     };
   }
 
-  factory Order.fromMap(String id, Map<String, dynamic> map, List<Dishes> allDishes) {
+  factory Orders.fromMap(String id, Map<String, dynamic> map, List<Dishes> allDishes) {
     List<OrderDishes> dishList = [];
 
     for (var dishMap in List<Map<String, dynamic>>.from(map['dishes'])) {
@@ -47,7 +47,7 @@ class Order {
       dishList.add(OrderDishes.fromMap(dishMap, matchedDish));
     }
 
-    return Order(
+    return Orders(
       id: id,
       groupId: map['groupId'],
       waiterId: map['waiterId'],

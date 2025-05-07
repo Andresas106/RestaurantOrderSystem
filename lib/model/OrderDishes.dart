@@ -1,5 +1,4 @@
 import 'package:tfg/model/Dishes.dart';
-import 'package:tfg/model/Order.dart';
 
 class OrderDishes {
   final Dishes dish;

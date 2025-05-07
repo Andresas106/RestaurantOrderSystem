@@ -74,15 +74,15 @@ class TableProviderIntern with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateTablesWithGroupId(String groupId, List<String> selectedTables) async {
+  Future<void> updateTablesWithGroupId(String groupId, List<Tables> selectedTables) async {
     _isLoading = true;
     notifyListeners();
 
     final firebase = FirebaseFirestore.instance;
     final batch = firebase.batch();
 
-    for (var tableId in selectedTables) {
-      final docRef = firebase.collection('tables').doc(tableId);
+    for (var table in selectedTables) {
+      final docRef = firebase.collection('tables').doc(table.id);
       batch.update(docRef, {
         'group_id': groupId,
       });

@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tfg/model/Dishes.dart';
+import 'package:tfg/model/OrderDishes.dart';
 
-import '../model/Order.dart';
+import '../model/Orders.dart';
 
 class OrderProviderIntern with ChangeNotifier {
   final Map<Dishes, int> _items = {};
@@ -28,8 +30,27 @@ class OrderProviderIntern with ChangeNotifier {
     }
   }
 
-  void createOrder(Order order) {
+  Future<void> createOrder(String groupId, String waiterId) async {
+      if(_items.isEmpty) return;
 
+      final now = DateTime.now();
+
+      final List<OrderDishes> orderDishes = _items.entries.map((e) => OrderDishes(dish: e.key, quantity: e.value)).toList();
+
+      final newOrder = new Orders(
+          id: '',
+          groupId: groupId,
+          waiterId: waiterId,
+          datetime: now,
+          state: 'pending',
+          sendToKitchen: false,
+          sendToKitchenIn: null,
+          servedIn: null,
+          dishes: orderDishes);
+
+      await FirebaseFirestore.instance.collection('orders').add(newOrder.toMap());
+
+      clearOrder();
   }
 
   void clearOrder() {

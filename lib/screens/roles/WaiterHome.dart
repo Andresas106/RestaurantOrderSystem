@@ -127,7 +127,6 @@ class _WaiterHomeState extends State<WaiterHome> {
                     // Crear pedido aquí
                     // Por ejemplo, generar un nuevo groupId y actualizar las mesas seleccionadas
                     String newGroupId = generateGroupId();
-                    //createOrderForTables(newGroupId);
 
 
                     final routerDelegate = Router.of(context).routerDelegate as AppRouterDelegate;
@@ -172,15 +171,5 @@ class _WaiterHomeState extends State<WaiterHome> {
   // Método para generar un groupId único (ejemplo simple)
   String generateGroupId() {
     return DateTime.now().millisecondsSinceEpoch.toString();
-  }
-
-  // Método para crear un pedido y asignar el groupId a las mesas seleccionadas
-  void createOrderForTables(String groupId) {
-    // Lógica para actualizar Firestore con el nuevo groupId en las mesas seleccionadas
-    final tableProvider = Provider.of<TableProviderIntern>(context, listen: false);
-    tableProvider.updateTablesWithGroupId(groupId, selectedTables);
-    print("SelectedTables: ${selectedTables}");
-
-    // Luego podrías redirigir al usuario a una página de detalle del pedido, por ejemplo.
   }
 }

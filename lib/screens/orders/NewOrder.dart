@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tfg/model/Tables.dart';
 import 'package:tfg/provider/table_provider_intern.dart';
 
 import '../../provider/menu_provider_intern.dart';
@@ -23,18 +22,27 @@ class NewOrder extends StatefulWidget {
 }
 
 class _NewOrderState extends State<NewOrder> {
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeOrder();
+
     });
   }
 
   Future<void> _initializeOrder() async {
       final tablesProvider = Provider.of<TableProviderIntern>(context, listen: false);
       await tablesProvider.selectTablesOrder(widget.tables);
+  }
+
+  @override
+  void didUpdateWidget(covariant NewOrder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.tables != widget.tables) {
+      // Si el valor de tables cambia, reinicializamos el estado
+      _initializeOrder();
+    }
   }
 
   @override
@@ -113,9 +121,12 @@ class _NewOrderState extends State<NewOrder> {
                 if (orderItems.isNotEmpty)
                   ElevatedButton(
                     onPressed: () {
-                      tableProvider.updateTablesWithGroupId(widget.groupId, widget.tables);
-                      //orderProvider.createOrder()
+                      tableProvider.updateTablesWithGroupId(widget.groupId, tableProvider.selectedTables);
+                      orderProvider.createOrder(widget.groupId, widget.uid);
                       Navigator.pop(context);
+                      Future.delayed(Duration.zero, () {
+                        Navigator.pop(context); // Cierra la pantalla actual
+                      });
                     },
                     child: const Text('Confirm Order'),
                   ),
@@ -203,15 +214,14 @@ class _NewOrderState extends State<NewOrder> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showOrderSummary(context),
+        onPressed: () => {
+
+          _showOrderSummary(context)
+        } ,
         icon: const Icon(Icons.shopping_cart, color: Colors.white,),
         label: const Text('View Order', style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.blue.shade800,
       ),
     );
-
-
-
-
   }
 }
