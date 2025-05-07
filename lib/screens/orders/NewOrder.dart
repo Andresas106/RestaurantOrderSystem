@@ -164,7 +164,7 @@ class _NewOrderState extends State<NewOrder> {
                   collapsedIconColor: Colors.white,
                   iconColor: Colors.white,
                   title: Text(
-                    category.name,
+                    '${category.name[0].toUpperCase()}${category.name.substring(1)}',
                     style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   children: dishes.map((dish) {
