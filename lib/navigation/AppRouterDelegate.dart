@@ -125,7 +125,6 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
       final args = _currentRoute?.arguments as Map<String, dynamic>?;
 
       if(args != null) {
-        print(args['tables']);
         pages.addAll([
           CustomTransitionPage(
             key: ValueKey('HomeScreen'),
@@ -133,7 +132,7 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
           ),
           CustomTransitionPage(
             key: ValueKey('NewOrder'),
-            child: NewOrder(groupId: args['group_id'], tables: args['tables'],),
+            child: NewOrder(groupId: args['group_id'], tables: args['tables'], uid: args['uid']),
           ),
         ]);
       }

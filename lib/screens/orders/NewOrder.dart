@@ -10,8 +10,10 @@ import '../../provider/order_provider_intern.dart';
 class NewOrder extends StatefulWidget {
   final String groupId;
   final List<String> tables;
+  final String uid;
 
-  const NewOrder({super.key, required this.groupId, required this.tables});
+
+  const NewOrder({super.key, required this.groupId, required this.tables, required this.uid});
 
   @override
   State<NewOrder> createState() => _NewOrderState();
@@ -111,8 +113,8 @@ class _NewOrderState extends State<NewOrder> {
                 if (orderItems.isNotEmpty)
                   ElevatedButton(
                     onPressed: () {
-                      // Aquí puedes guardar la orden en Firestore o seguir al siguiente paso
-                      orderProvider.clearOrder();
+                      tableProvider.updateTablesWithGroupId(widget.groupId, widget.tables);
+                      //orderProvider.createOrder()
                       Navigator.pop(context);
                     },
                     child: const Text('Confirm Order'),

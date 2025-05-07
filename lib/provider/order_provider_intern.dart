@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:tfg/model/Dishes.dart';
 
+import '../model/Order.dart';
+
 class OrderProviderIntern with ChangeNotifier {
   final Map<Dishes, int> _items = {};
 
@@ -24,6 +26,10 @@ class OrderProviderIntern with ChangeNotifier {
       }
       notifyListeners();
     }
+  }
+
+  void createOrder(Order order) {
+
   }
 
   void clearOrder() {

@@ -26,7 +26,8 @@ class AppRouteInformationParser extends RouteInformationParser<RouteSettings> {
     if (uri.pathSegments.length == 2 && uri.pathSegments[0] == 'new-order') {
       String groupId = uri.pathSegments[1];
       List<String> tables = uri.queryParameters['tables']?.split(',') ?? []; // Dividir las mesas de la query string
-      return RouteSettings(name: '/new-order', arguments: {'group_id': groupId, 'tables': tables});
+      String? uid = uri.queryParameters['uid'];
+      return RouteSettings(name: '/new-order', arguments: {'group_id': groupId, 'tables': tables, 'uid': uid});
     }
     //user-management
 
@@ -74,10 +75,12 @@ class AppRouteInformationParser extends RouteInformationParser<RouteSettings> {
       if (arguments != null) {
         final groupId = arguments['group_id'];
         final tables = arguments['tables'] as List<String>;
+        final uid = arguments['uid'];
+
 
         // Convertir List<String> a una cadena separada por comas
         final tablesQuery = tables.join(',');
-        return RouteInformation(uri: Uri.parse('/new-order/$groupId?tables=$tablesQuery'));
+        return RouteInformation(uri: Uri.parse('/new-order/$groupId?tables=$tablesQuery&uid=$uid'));
       }
     }
 
