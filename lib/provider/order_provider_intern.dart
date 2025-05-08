@@ -53,6 +53,39 @@ class OrderProviderIntern with ChangeNotifier {
       clearOrder();
   }
 
+  Future<void> loadOrder(String groupId) async {
+    _items.clear();
+
+    final query = await FirebaseFirestore.instance
+    .collection('orders')
+    .where('groupId', isEqualTo: groupId)
+    .limit(1)
+    .get();
+
+    if(query.docs.isEmpty) return;
+
+    final orderData = query.docs.first.data();
+    final List<dynamic> dishesList = orderData['dishes'];
+
+    for(var dishEntry in dishesList) {
+      final int dishId = dishEntry['dishId'];
+      final int quantity = dishEntry['quantity'];
+
+      final dishSnapshot = await FirebaseFirestore.instance
+      .collection('dishes')
+      .where('id', isEqualTo: dishId)
+      .limit(1)
+      .get();
+
+      if(dishSnapshot.docs.isNotEmpty) {
+        final dish = Dishes.fromMap(dishSnapshot.docs.first.data());
+        _items[dish] = quantity;
+      }
+    }
+
+    notifyListeners();
+  }
+
   void clearOrder() {
     _items.clear();
     notifyListeners();

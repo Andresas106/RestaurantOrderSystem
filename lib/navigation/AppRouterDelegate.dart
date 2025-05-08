@@ -115,7 +115,7 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
           ),
           CustomTransitionPage(
             key: ValueKey('EditOrder'),
-            child: EditOrder(groupId: args['group_id']),
+            child: EditOrder(groupId: args['group_id'], uid: args['uid']),
           ),
         ]);
       }

@@ -21,7 +21,8 @@ class AppRouteInformationParser extends RouteInformationParser<RouteSettings> {
     }
     if(uri.pathSegments.length == 2 && uri.pathSegments[0] == 'edit-order') {
       String groupId = uri.pathSegments[1];
-      return RouteSettings(name: '/edit-order', arguments: {'group_id': groupId});
+      String? uid = uri.queryParameters['uid'];
+      return RouteSettings(name: '/edit-order', arguments: {'group_id': groupId, 'uid': uid});
     }
     if (uri.pathSegments.length == 2 && uri.pathSegments[0] == 'new-order') {
       String groupId = uri.pathSegments[1];
@@ -65,7 +66,8 @@ class AppRouteInformationParser extends RouteInformationParser<RouteSettings> {
       final arguments = configuration.arguments as Map<String, dynamic>?;
       if (arguments != null) {
         final group_id = arguments['group_id'];
-        return RouteInformation(uri: Uri.parse('/edit-order/$group_id'));
+        final uid = arguments['uid'];
+        return RouteInformation(uri: Uri.parse('/edit-order/$group_id?uid=$uid'));
       }
     }
 

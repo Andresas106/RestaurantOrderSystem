@@ -64,7 +64,11 @@ class _WaiterHomeState extends State<WaiterHome> {
                             });
                             final routerDelegate = Router.of(context).routerDelegate as AppRouterDelegate;
                             routerDelegate.setNewRoutePath(
-                              RouteSettings(name: '/edit-order', arguments: {'group_id': table.groupId, 'uid': widget.uid, 'role': widget.role}),
+                              RouteSettings(name: '/edit-order',
+                                  arguments: {
+                                'group_id': table.groupId,
+                                'uid': widget.uid,
+                                'role': widget.role}),
                             );
                           } else {
                             setState(() {
