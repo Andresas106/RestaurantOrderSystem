@@ -56,85 +56,96 @@ class _NewOrderState extends State<NewOrder> {
 
       showModalBottomSheet(
         context: context,
+        isScrollControlled: true, // Esto permite usar más espacio vertical
         backgroundColor: Colors.grey.shade900,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         builder: (_) {
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Order Summary',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                const SizedBox(height: 10),
-                if (orderItems.isEmpty)
-                  const Text('There are no dishes in the order.', style: TextStyle(color: Colors.white70))
-                else
-                  ...orderItems.entries.map((entry) {
-                    final dish = entry.key;
-                    final quantity = entry.value;
-                    return ListTile(
-                      title: Text(dish.name, style: const TextStyle(color: Colors.white)),
-                      subtitle: Text('${dish.price.toStringAsFixed(2)} € x $quantity',
-                          style: const TextStyle(color: Colors.white70)),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent),
-                            onPressed: () {
-                              orderProvider.removeDish(dish);
-                              Navigator.pop(context);
-                              _showOrderSummary(context); // Recargar el modal
-                            },
+          return DraggableScrollableSheet(
+            initialChildSize: 0.6, // Ajusta este valor según necesites
+            minChildSize: 0.3,
+            maxChildSize: 0.9,
+            expand: false,
+            builder: (_, scrollController) {
+              return SingleChildScrollView(
+                controller: scrollController,
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Order Summary',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                    const SizedBox(height: 10),
+                    if (orderItems.isEmpty)
+                      const Text('There are no dishes in the order.', style: TextStyle(color: Colors.white70))
+                    else
+                      ...orderItems.entries.map((entry) {
+                        final dish = entry.key;
+                        final quantity = entry.value;
+                        return ListTile(
+                          title: Text(dish.name, style: const TextStyle(color: Colors.white)),
+                          subtitle: Text('${dish.price.toStringAsFixed(2)} € x $quantity',
+                              style: const TextStyle(color: Colors.white70)),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.remove_circle_outline, color: Colors.redAccent),
+                                onPressed: () {
+                                  orderProvider.removeDish(dish);
+                                  Navigator.pop(context);
+                                  _showOrderSummary(context); // Recargar el modal
+                                },
+                              ),
+                              Text('$quantity', style: const TextStyle(color: Colors.white)),
+                              IconButton(
+                                icon: const Icon(Icons.add_circle_outline, color: Colors.greenAccent),
+                                onPressed: () {
+                                  orderProvider.addDish(dish);
+                                  Navigator.pop(context);
+                                  _showOrderSummary(context); // Recargar el modal
+                                },
+                              ),
+                            ],
                           ),
-                          Text('$quantity', style: const TextStyle(color: Colors.white)),
-                          IconButton(
-                            icon: const Icon(Icons.add_circle_outline, color: Colors.greenAccent),
-                            onPressed: () {
-                              orderProvider.addDish(dish);
-                              Navigator.pop(context);
-                              _showOrderSummary(context); // Recargar el modal
-                            },
+                        );
+                      }),
+                    const Divider(color: Colors.white38),
+                    if (orderItems.isNotEmpty)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Total:', style: TextStyle(fontSize: 16, color: Colors.white)),
+                          Text(
+                            '${orderProvider.getTotalPrice.toStringAsFixed(2)} €',
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                           ),
                         ],
                       ),
-                    );
-                  }),
-                const Divider(color: Colors.white38),
-                if (orderItems.isNotEmpty)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Total:', style: TextStyle(fontSize: 16, color: Colors.white)),
-                      Text(
-                        '${orderProvider.getTotalPrice.toStringAsFixed(2)} €',
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                    const SizedBox(height: 10),
+                    if (orderItems.isNotEmpty)
+                      ElevatedButton(
+                        onPressed: () {
+                          tableProvider.updateTablesWithGroupId(widget.groupId, tableProvider.selectedTables);
+                          orderProvider.createOrder(widget.groupId, widget.uid);
+                          Navigator.pop(context);
+                          Future.delayed(Duration.zero, () {
+                            Navigator.pop(context); // Cierra la pantalla actual
+                          });
+                        },
+                        child: const Text('Confirm Order'),
                       ),
-                    ],
-                  ),
-                const SizedBox(height: 10),
-                if (orderItems.isNotEmpty)
-                  ElevatedButton(
-                    onPressed: () {
-                      tableProvider.updateTablesWithGroupId(widget.groupId, tableProvider.selectedTables);
-                      orderProvider.createOrder(widget.groupId, widget.uid);
-                      Navigator.pop(context);
-                      Future.delayed(Duration.zero, () {
-                        Navigator.pop(context); // Cierra la pantalla actual
-                      });
-                    },
-                    child: const Text('Confirm Order'),
-                  ),
-              ],
-            ),
+                  ],
+                ),
+              );
+            },
           );
         },
       );
+
     }
 
     return Scaffold(

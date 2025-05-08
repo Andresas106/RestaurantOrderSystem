@@ -53,6 +53,37 @@ class OrderProviderIntern with ChangeNotifier {
       clearOrder();
   }
 
+  Future<void> updateOrder(String groupId) async {
+    if(_items.isEmpty) return;
+
+    final query = await FirebaseFirestore.instance
+    .collection('orders')
+    .where('groupId', isEqualTo: groupId)
+    .limit(1)
+    .get();
+
+    if(query.docs.isEmpty) return;
+
+    final docId = query.docs.first.id;
+
+    final List<Map<String, dynamic>> updatedDishes = _items.entries.map((entry) {
+      return {
+        'dishId': entry.key.id,
+        'quantity': entry.value
+      };
+    }).toList();
+
+    await FirebaseFirestore.instance
+    .collection('orders')
+    .doc(docId)
+    .update({
+      'dishes': updatedDishes,
+      'updatedAt': DateTime.now()
+    });
+
+    notifyListeners();
+  }
+
   Future<void> loadOrder(String groupId) async {
     _items.clear();
 
