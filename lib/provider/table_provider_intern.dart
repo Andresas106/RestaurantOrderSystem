@@ -46,6 +46,7 @@ class TableProviderIntern with ChangeNotifier {
     await FirebaseFirestore.instance.collection('tables').add({
       'table_number': newNumber,
       'group_id': null,
+      'locked_by': null
     });
 
     _isLoading = false;
@@ -112,5 +113,17 @@ class TableProviderIntern with ChangeNotifier {
     _isLoading = false;
     notifyListeners();
 
+  }
+
+  Future<void> lockTable(String tableId, String uid) async {
+    await FirebaseFirestore.instance.collection('tables').doc(tableId).update({
+      'locked_by': uid,
+    });
+  }
+
+  Future<void> unlockTables(String tableId) async {
+    await FirebaseFirestore.instance.collection('tables').doc(tableId).update({
+      'locked_by': null,
+    });
   }
 }

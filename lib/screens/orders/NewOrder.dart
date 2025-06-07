@@ -27,7 +27,6 @@ class _NewOrderState extends State<NewOrder> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeOrder();
-
     });
   }
 
@@ -161,7 +160,13 @@ class _NewOrderState extends State<NewOrder> {
         backgroundColor: Colors.blue.shade800,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () async {
+            for (var table in tableProvider.selectedTables) {
+              await tableProvider.unlockTables(table.id);
+            }
+
+            Navigator.of(context).pop();
+          },
         ),
       ),
       body: Container(

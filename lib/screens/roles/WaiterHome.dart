@@ -58,7 +58,22 @@ class _WaiterHomeState extends State<WaiterHome> {
 
                       return GestureDetector(
                         onTap: () {
-                          if(table.groupId != null) {
+                          if(table.lockedBy != null && table.lockedBy != widget.uid) {
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: const Text('Table in use'),
+                                content: const Text('Another waiter is managing this table.'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          else if(table.groupId != null) {
                             setState(() {
                               selectedTables.clear();
                             });
@@ -74,14 +89,16 @@ class _WaiterHomeState extends State<WaiterHome> {
                             setState(() {
                               // Si la mesa ya está seleccionada, la desmarco
                               if (isSelected) {
+                                // Desmarcar mesa y desbloquear
                                 selectedTables.remove(table.id);
+                                tableProvider.unlockTables(table.id);
                               } else {
+                                // Marcar mesa y bloquear
                                 selectedTables.add(table.id);
+                                tableProvider.lockTable(table.id, widget.uid);
                               }
                             });
                           }
-
-
                         },
                         child: Container(
                           decoration: BoxDecoration(
