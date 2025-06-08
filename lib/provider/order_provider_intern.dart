@@ -35,7 +35,13 @@ class OrderProviderIntern with ChangeNotifier {
 
       final now = DateTime.now();
 
-      final List<OrderDishes> orderDishes = _items.entries.map((e) => OrderDishes(dish: e.key, quantity: e.value)).toList();
+      final List<OrderDishes> orderDishes = _items.entries.map((e) =>
+          OrderDishes(
+            dish: e.key,
+            quantity: e.value,
+            state: OrderDishState.pending,
+          )
+      ).toList();
 
       final newOrder = new Orders(
           id: '',
