@@ -126,4 +126,17 @@ class TableProviderIntern with ChangeNotifier {
       'locked_by': null,
     });
   }
+
+  Future<void> selectTablesOrderByGroupId(String groupId) async {
+    final firebase = FirebaseFirestore.instance;
+
+    final tablesQuery = await firebase
+        .collection('tables')
+        .where('group_id', isEqualTo: groupId)
+        .get();
+
+    _selectedTables = tablesQuery.docs.map((doc) {
+      return Tables.fromMap(doc.id, doc.data());
+    }).toList();
+  }
 }

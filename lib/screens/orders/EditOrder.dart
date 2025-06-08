@@ -23,6 +23,20 @@ class _EditOrderState extends State<EditOrder> {
   void initState() {
     super.initState();
     _loadOrderData();
+    _loadLock();
+  }
+
+  Future<void> _loadLock() async {
+    final tableProvider = Provider.of<TableProviderIntern>(context, listen: false);
+
+    // Primero, carga las mesas relacionadas con este pedido (groupId)
+    await tableProvider.selectTablesOrderByGroupId(widget.groupId);
+
+    for (var table in tableProvider.selectedTables) {
+      // Aquí podrías implementar un método que devuelva si el lock fue exitoso
+      await tableProvider.lockTable(table.id, widget.uid);
+      // En un sistema real deberías comprobar si ya está bloqueado por otro, y si no pudo bloquear => allLocked = false;
+    }
   }
 
   Future<void> _loadOrderData() async {
@@ -37,6 +51,8 @@ class _EditOrderState extends State<EditOrder> {
     final orderProvider = Provider.of<OrderProviderIntern>(context, listen: false);
     final tableProvider = Provider.of<TableProviderIntern>(context, listen: false);
     final orderItems = orderProvider.items;
+
+
 
     showModalBottomSheet(
       context: context,
@@ -114,6 +130,9 @@ class _EditOrderState extends State<EditOrder> {
                     ElevatedButton(
                       onPressed: () async {
                         await orderProvider.updateOrder(widget.groupId);
+                        for(var table in tableProvider.selectedTables) {
+                          tableProvider.unlockTables(table.id);
+                        }
                         Navigator.pop(context); // Cierra bottom sheet
                         Navigator.pop(context); // Cierra pantalla EditOrder
                       },
@@ -133,6 +152,7 @@ class _EditOrderState extends State<EditOrder> {
   Widget build(BuildContext context) {
     final orderProvider = Provider.of<OrderProviderIntern>(context);
     final menuProvider = Provider.of<MenuProviderIntern>(context);
+    final tableProvider = Provider.of<TableProviderIntern>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -140,7 +160,14 @@ class _EditOrderState extends State<EditOrder> {
         backgroundColor: Colors.blue.shade800,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            for(var table in tableProvider.selectedTables) {
+              tableProvider.unlockTables(table.id);
+            }
+
+            Navigator.of(context).pop();
+          }
+
         ),
       ),
       body: Container(

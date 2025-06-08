@@ -130,6 +130,9 @@ class _NewOrderState extends State<NewOrder> {
                         onPressed: () {
                           tableProvider.updateTablesWithGroupId(widget.groupId, tableProvider.selectedTables);
                           orderProvider.createOrder(widget.groupId, widget.uid);
+                          for(var table in tableProvider.selectedTables) {
+                            tableProvider.unlockTables(table.id);
+                          }
                           Navigator.pop(context);
                           Future.delayed(Duration.zero, () {
                             Navigator.pop(context); // Cierra la pantalla actual

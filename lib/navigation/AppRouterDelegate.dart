@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:tfg/screens/HomeScreen.dart';
 import 'package:tfg/screens/SplashScreen.dart';
 import 'package:tfg/screens/LoginScreen.dart';
 import 'package:tfg/screens/management/UserManagement.dart';
 import 'package:tfg/screens/orders/NewOrder.dart';
 
+import '../provider/table_provider_intern.dart';
 import '../screens/management/TableManagement.dart';
 import '../screens/orders/EditOrder.dart';
 
@@ -168,13 +170,39 @@ class AppRouterDelegate extends RouterDelegate<RouteSettings>
         }
         else if(_currentRoute?.name == '/edit-order') {
           final args = _currentRoute?.arguments as Map<String, dynamic>?;
-          if(args != null) {
+          if (args != null) {
+            final tableProvider = Provider.of<TableProviderIntern>(
+              navigatorKey.currentContext!,
+              listen: false,
+            );
+
+            // Extrae los IDs de las mesas que están bloqueadas por este usuario
+            final lockedTableIds = tableProvider.selectedTables.toList();
+            print(lockedTableIds.toString());
+            for(var table in lockedTableIds) {
+              tableProvider.unlockTables(table.id);
+            }
+
+
             _setNewRoutePath(RouteSettings(name: '/home', arguments: args));
           }
         }
         else if(_currentRoute?.name == '/new-order') {
           final args = _currentRoute?.arguments as Map<String, dynamic>?;
-          if(args != null) {
+          if (args != null) {
+            final tableProvider = Provider.of<TableProviderIntern>(
+              navigatorKey.currentContext!,
+              listen: false,
+            );
+
+            // Extrae los IDs de las mesas que están bloqueadas por este usuario
+            final lockedTableIds = tableProvider.selectedTables.toList();
+            print(lockedTableIds.toString());
+            for(var table in lockedTableIds) {
+              tableProvider.unlockTables(table.id);
+            }
+
+
             _setNewRoutePath(RouteSettings(name: '/home', arguments: args));
           }
         }
