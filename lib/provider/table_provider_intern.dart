@@ -139,4 +139,12 @@ class TableProviderIntern with ChangeNotifier {
       return Tables.fromMap(doc.id, doc.data());
     }).toList();
   }
+
+  List<int> getTableNumbersForGroup(String groupId) {
+    print('tables: ${_tables}');
+    return _tables
+        .where((table) => table.groupId == groupId)
+        .map((table) => table.tableNumber)
+        .toList();
+  }
 }

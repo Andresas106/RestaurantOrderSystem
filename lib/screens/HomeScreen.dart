@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'admin':
         return AdminHome(uid: widget.uid, role: widget.role);
       case 'chef':
-        return ChefHome(uid: widget.uid);
+        return ChefHome(uid: widget.uid, role: widget.role);
       case 'waiter':
         return WaiterHome(uid: widget.uid, role: widget.role);
       default:

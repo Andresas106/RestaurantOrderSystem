@@ -28,11 +28,17 @@ class OrderDishes {
   }
 
   factory OrderDishes.fromMap(Map<String, dynamic> map, Dishes dish) {
+
+    final stateString = map['state'] as String?;
+    final state = stateString != null
+        ? OrderDishState.values.byName(stateString)
+        : OrderDishState.pending; // Valor por defecto en caso de null
+
     return OrderDishes(
         dish: dish,
         quantity: map['quantity'],
         notes: map['notes'],
-        state: OrderDishState.values.byName(map['state'])
+        state: state
     );
   }
 }
