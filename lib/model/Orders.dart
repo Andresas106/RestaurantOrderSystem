@@ -3,12 +3,20 @@ import 'package:tfg/model/OrderDishes.dart';
 
 import 'Dishes.dart';
 
+
+enum OrderState {
+  pending,
+  inPreparation,
+  ready,
+  completed
+}
+
 class Orders {
   final String id;
   final String groupId;
   final String waiterId;
   final DateTime datetime;
-  final String state;
+  final OrderState state;
   final bool sendToKitchen;
   final DateTime? sendToKitchenIn;
   final DateTime? servedIn;
@@ -31,7 +39,7 @@ class Orders {
       'groupId': groupId,
       'waiterId': waiterId,
       'datetime': Timestamp.fromDate(datetime),
-      'state': state,
+      'state': state.name,
       'sendToKitchen': sendToKitchen,
       'sendToKitchenIn': sendToKitchenIn != null ? Timestamp.fromDate(sendToKitchenIn!) : null,
       'servedIn': servedIn != null ? Timestamp.fromDate(servedIn!) : null,
@@ -52,11 +60,18 @@ class Orders {
       groupId: map['groupId'],
       waiterId: map['waiterId'],
       datetime: (map['datetime'] as Timestamp).toDate(),
-      state: map['state'],
+        state: _orderStateFromString(map['state']),
       sendToKitchen: map['sendToKitchen'],
       sendToKitchenIn: map['sendToKitchenIn'] != null ? (map['sendToKitchenIn'] as Timestamp).toDate() : null,
       servedIn: map['servedIn'] != null ? (map['servedIn'] as Timestamp).toDate() : null,
       dishes: dishList,
+    );
+  }
+
+  static OrderState _orderStateFromString(String stateString) {
+    return OrderState.values.firstWhere(
+          (e) => e.name == stateString,
+      orElse: () => OrderState.pending,
     );
   }
 }

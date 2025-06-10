@@ -17,7 +17,7 @@ class OrderKitchenProvider with ChangeNotifier {
 
     _ordersSubscription = FirebaseFirestore.instance
         .collection('orders')
-        .where('state', isEqualTo: 'pending')
+        .where('state', whereIn: ['pending', 'inPreparation', 'ready'])
         .orderBy('datetime', descending: false)
         .snapshots()
         .listen((snapshot) {
@@ -30,6 +30,47 @@ class OrderKitchenProvider with ChangeNotifier {
       _pendingOrders = orders;
       notifyListeners();
     });
+  }
+
+  Future<void> updateOrderState(String orderId, OrderState newState) async {
+    final orderRef = FirebaseFirestore.instance.collection('orders').doc(orderId);
+
+    final snapshot = await orderRef.get();
+    if (!snapshot.exists) return;
+
+    final data = snapshot.data();
+    if (data == null || !data.containsKey('dishes')) return;
+
+    List<dynamic> updatedDishes = data['dishes'];
+    final groupId = data['groupId'];
+
+    // Si el pedido se marca como "listo", actualiza todos los platos también
+    if (newState == OrderState.ready) {
+      updatedDishes = updatedDishes.map((dishMap) {
+        return {
+          ...dishMap,
+          'state': OrderDishState.ready.name,
+        };
+      }).toList();
+    }
+
+    if(newState == OrderState.completed && groupId != null) {
+      final tableQuery = await FirebaseFirestore.instance
+          .collection('tables')
+          .where('group_id', isEqualTo: groupId)
+          .get();
+
+      for (final doc in tableQuery.docs) {
+        await doc.reference.update({'group_id': null});
+      }
+    }
+
+    await orderRef.update({
+      'state': newState.name,
+      'dishes': updatedDishes,
+    });
+
+    notifyListeners();
   }
 
   Future<void> updateDishState({

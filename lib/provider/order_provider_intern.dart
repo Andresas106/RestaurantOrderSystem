@@ -48,7 +48,7 @@ class OrderProviderIntern with ChangeNotifier {
           groupId: groupId,
           waiterId: waiterId,
           datetime: now,
-          state: 'pending',
+          state: OrderState.pending,
           sendToKitchen: false,
           sendToKitchenIn: null,
           servedIn: null,

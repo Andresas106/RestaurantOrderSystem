@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tfg/model/Orders.dart';
 import 'package:tfg/provider/orderKitchen_provider_intern.dart';
 import 'package:tfg/provider/table_provider_intern.dart';
 
@@ -60,7 +61,26 @@ class _ChefHomeState extends State<ChefHome> {
             margin: const EdgeInsets.all(8),
             child: ExpansionTile(
               title: Text('Order Tables ${tableString}'),
-              subtitle: Text('Fecha: ${order.datetime.toString()}'),
+              subtitle: Row(
+                children: [
+                  const Text('Order State'),
+                  const SizedBox(width: 10,),
+                  DropdownButton<OrderState>(
+                    value: order.state,
+                    onChanged: (newState) {
+                      if(newState != null) Provider.of<OrderKitchenProvider>(context, listen: false)
+                          .updateOrderState(order.id, newState);
+
+                    },
+                    items: OrderState.values.map((state) {
+                      return DropdownMenuItem(
+                        value: state,
+                        child: Text(_formatOrderState(state)),
+                      );
+                    }).toList(),
+                  )
+                ],
+              ),
               children: order.dishes.map((dish) {
                 return ListTile(
                   title: Text('${dish.dish.name} x${dish.quantity}'),
@@ -97,13 +117,26 @@ class _ChefHomeState extends State<ChefHome> {
   String _formatState(OrderDishState state) {
     switch (state) {
       case OrderDishState.pending:
-        return 'Pendiente';
+        return 'Pending';
       case OrderDishState.inPreparation:
-        return 'En preparación';
+        return 'In preparation';
       case OrderDishState.ready:
-        return 'Listo';
+        return 'Ready';
       default:
-        return 'Desconocido';
+        return 'Unknown';
+    }
+  }
+
+  String _formatOrderState(OrderState state) {
+    switch (state) {
+      case OrderState.pending:
+        return 'Pending';
+      case OrderState.inPreparation:
+        return 'In preparation';
+      case OrderState.ready:
+        return 'Ready';
+      case OrderState.completed:
+        return 'Completed';
     }
   }
 }
