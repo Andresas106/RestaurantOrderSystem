@@ -4,13 +4,15 @@ import 'package:flutter/cupertino.dart';
 import '../model/Tables.dart';
 
 class TableProviderIntern with ChangeNotifier {
-  final List<Tables> _tables = [];
+  List<Tables> _tables = [];
   bool _isLoading = false;
   List<Tables> _selectedTables = [];
+  Map<String, String> _groupOrderStatuses = {};
 
   List<Tables> get tables => _tables;
   bool get isLoading => _isLoading;
   List<Tables> get selectedTables => _selectedTables;
+  Map<String, String> get groupOrderStatuses => _groupOrderStatuses;
 
   /// Escucha los cambios en tiempo real
   void listenToTables() {
@@ -18,14 +20,42 @@ class TableProviderIntern with ChangeNotifier {
         .collection('tables')
         .orderBy('table_number')
         .snapshots()
-        .listen((snapshot) {
-      _tables.clear();
+        .listen((snapshot) async {
+      final updatedTables = <Tables>[];
+      final updatedStatuses = <String, String>{};
+      final futures = <Future<void>>[];
+
       for (var doc in snapshot.docs) {
-        _tables.add(Tables.fromMap(doc.id, doc.data()));
+        final table = Tables.fromMap(doc.id, doc.data());
+        updatedTables.add(table);
+
+        if (table.groupId != null) {
+          // Añadimos la petición a la lista de futures
+          futures.add(FirebaseFirestore.instance
+              .collection('orders')
+              .where('groupId', isEqualTo: table.groupId)
+              .limit(1)
+              .get()
+              .then((querySnapshot) {
+            if (querySnapshot.docs.isNotEmpty) {
+              final status = querySnapshot.docs.first.data()['state'] as String?;
+              if (status != null) {
+                updatedStatuses[table.groupId!] = status;
+              }
+            }
+          }));
+        }
       }
+
+      // Esperamos a que todas las peticiones paralelas terminen
+      await Future.wait(futures);
+
+      _tables = updatedTables;
+      _groupOrderStatuses = updatedStatuses;
       notifyListeners();
     });
   }
+
 
   /// Crea una nueva mesa con número secuencial
   Future<void> addTable() async {

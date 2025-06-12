@@ -219,11 +219,40 @@ class _EditOrderState extends State<EditOrder> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showOrderSummary(context),
-        icon: const Icon(Icons.shopping_cart, color: Colors.white),
-        label: const Text('Review Order', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue.shade800,
+      floatingActionButton: Consumer<OrderProviderIntern>(
+        builder: (context, orderProvider, _) {
+          final totalItems = orderProvider.items.values.fold<int>(0, (sum, item) => sum + item);
+
+          return FloatingActionButton.extended(
+            onPressed: () => _showOrderSummary(context),
+            backgroundColor: Colors.blue.shade800,
+            label: Row(
+              children: [
+                const Icon(Icons.shopping_cart, color: Colors.white),
+                const SizedBox(width: 8),
+                const Text('View Order', style: TextStyle(color: Colors.white)),
+                if (totalItems > 0) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      '$totalItems',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ]
+              ],
+            ),
+          );
+        },
       ),
     );
   }

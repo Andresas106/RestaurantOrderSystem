@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:tfg/navigation/AppRouterDelegate.dart';
 import '../provider/auth_provider_intern.dart';
@@ -83,7 +84,10 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Logo y título
-                Icon(Icons.restaurant_menu, size: 80, color: Colors.white),
+                SvgPicture.asset(
+                  'images/logo.svg',
+                  width: 250,
+                ),
                 SizedBox(height: 10),
                 Text(
                   "ServeSync",

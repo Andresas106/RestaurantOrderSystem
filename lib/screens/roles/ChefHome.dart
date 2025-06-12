@@ -46,70 +46,181 @@ class _ChefHomeState extends State<ChefHome> {
     }
 
     if (orders.isEmpty) {
-      return const Center(child: Text('No hay pedidos pendientes'));
+      return Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF1565C0), Colors.black],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: const Center(
+            child: Text(
+              'No pending orders',
+              style: TextStyle(color: Colors.white70, fontSize: 18),
+            ),
+          ),
+        ),
+      );
     }
 
     return Scaffold(
-      body: ListView.builder(
-        itemCount: orders.length,
-        itemBuilder: (context, index) {
-          final order = orders[index];
-          final tableProvider = Provider.of<TableProviderIntern>(context, listen: false);
-          final tableNumbers = tableProvider.getTableNumbersForGroup(order.groupId);
-          final tableString = tableNumbers.join(', ');
-          return Card(
-            margin: const EdgeInsets.all(8),
-            child: ExpansionTile(
-              title: Text('Order Tables ${tableString}'),
-              subtitle: Row(
-                children: [
-                  const Text('Order State'),
-                  const SizedBox(width: 10,),
-                  DropdownButton<OrderState>(
-                    value: order.state,
-                    onChanged: (newState) {
-                      if(newState != null) Provider.of<OrderKitchenProvider>(context, listen: false)
-                          .updateOrderState(order.id, newState);
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF1565C0), Colors.black],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: ListView.builder(
+          padding: const EdgeInsets.all(12),
+          itemCount: orders.length,
+          itemBuilder: (context, index) {
+            final order = orders[index];
+            final tableNumbers = tableProvider.getTableNumbersForGroup(order.groupId);
+            final tableString = tableNumbers.join(', ');
 
-                    },
-                    items: OrderState.values.map((state) {
-                      return DropdownMenuItem(
-                        value: state,
-                        child: Text(_formatOrderState(state)),
-                      );
-                    }).toList(),
-                  )
-                ],
-              ),
-              children: order.dishes.map((dish) {
-                return ListTile(
-                  title: Text('${dish.dish.name} x${dish.quantity}'),
-                  subtitle: Text('Notas: ${dish.notes ?? "Ninguna"}'),
-                  trailing: DropdownButton<OrderDishState>(
-                    value: dish.state,
-                    onChanged: (newState) {
-                      if (newState != null) {
-                        final orderProvider = Provider.of<OrderKitchenProvider>(context, listen: false);
+            Color getOrderStateColor(OrderState state) {
+              switch (state) {
+                case OrderState.pending:
+                  return Colors.orange.shade400;
+                case OrderState.inPreparation:
+                  return Colors.yellow.shade700;
+                case OrderState.ready:
+                  return Colors.blue.shade400;
+                case OrderState.completed:
+                  return Colors.grey.shade600;
+              }
+            }
 
-                        orderProvider.updateDishState(
-                          orderId: order.id,
-                          dishId: dish.dish.id,
-                          newState: newState,
-                        );
-                      }
-                    },
-                    items: OrderDishState.values.map((state) {
-                      return DropdownMenuItem<OrderDishState>(
-                        value: state,
-                        child: Text(_formatState(state)),
-                      );
-                    }).toList(),
+            return Card(
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              color: Colors.grey.shade900.withOpacity(0.8),
+              elevation: 6,
+              shadowColor: Colors.black87,
+              child: ExpansionTile(
+                tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                title: Text(
+                  'Order Tables: $tableString',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
-                );
-              }).toList(),
-            ),
-          );
-        },
+                ),
+                subtitle: Row(
+                  children: [
+                    const Text(
+                      'Order State:',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                    const SizedBox(width: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: getOrderStateColor(order.state),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: DropdownButton<OrderState>(
+                        dropdownColor: Colors.grey.shade800,
+                        isDense: true,
+                        value: order.state,
+                        underline: const SizedBox(),
+                        iconEnabledColor: Colors.white,
+                        style: const TextStyle(color: Colors.white),
+                        onChanged: (newState) {
+                          if (newState != null) {
+                            Provider.of<OrderKitchenProvider>(context, listen: false)
+                                .updateOrderState(order.id, newState);
+                          }
+                        },
+                        items: OrderState.values.map((state) {
+                          return DropdownMenuItem(
+                            value: state,
+                            child: Text(_formatOrderState(state)),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  ],
+                ),
+                children: order.dishes.map((dish) {
+                  Color getDishStateColor(OrderDishState state) {
+                    switch (state) {
+                      case OrderDishState.pending:
+                        return Colors.orange.shade400;
+                      case OrderDishState.inPreparation:
+                        return Colors.yellow.shade700;
+                      case OrderDishState.ready:
+                        return Colors.blue.shade400;
+                      default:
+                        return Colors.grey;
+                    }
+                  }
+
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade800.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.4),
+                          blurRadius: 6,
+                          offset: const Offset(2, 3),
+                        )
+                      ],
+                    ),
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    child: ListTile(
+                      title: Text(
+                        '${dish.dish.name} x${dish.quantity}',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      subtitle: Text(
+                        'Notas: ${dish.notes ?? "Ninguna"}',
+                        style: const TextStyle(color: Colors.white70),
+                      ),
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: getDishStateColor(dish.state),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: DropdownButton<OrderDishState>(
+                          dropdownColor: Colors.grey.shade800,
+                          isDense: true,
+                          value: dish.state,
+                          underline: const SizedBox(),
+                          iconEnabledColor: Colors.white,
+                          style: const TextStyle(color: Colors.white),
+                          onChanged: (newState) {
+                            if (newState != null) {
+                              final orderProvider = Provider.of<OrderKitchenProvider>(context, listen: false);
+                              orderProvider.updateDishState(
+                                orderId: order.id,
+                                dishId: dish.dish.id,
+                                newState: newState,
+                              );
+                            }
+                          },
+                          items: OrderDishState.values.map((state) {
+                            return DropdownMenuItem<OrderDishState>(
+                              value: state,
+                              child: Text(_formatState(state)),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -56,6 +56,33 @@ class _WaiterHomeState extends State<WaiterHome> {
                       final table = tables[index];
                       final isSelected = selectedTables.contains(table.id);
 
+                      final orderStatus = table.groupId != null
+                      ? tableProvider.groupOrderStatuses[table.groupId!]
+                          : null;
+
+                      Color backgroundColor;
+
+                      if (orderStatus == null) {
+                      backgroundColor = Colors.green[400]!;
+                      } else {
+                        switch (orderStatus) {
+                          case 'pending':
+                            backgroundColor = Colors.orange[400]!;
+                            break;
+                          case 'inPreparation':
+                            backgroundColor = Colors.yellow[600]!;
+                            break;
+                          case 'ready':
+                            backgroundColor = Colors.blue[400]!;
+                            break;
+                          case 'completed':
+                            backgroundColor = Colors.grey[600]!;
+                            break;
+                          default:
+                            backgroundColor = Colors.orange[400]!;
+                        }
+                      }
+
                       return GestureDetector(
                         onTap: () {
                           if(table.lockedBy != null && table.lockedBy != widget.uid) {
@@ -86,7 +113,6 @@ class _WaiterHomeState extends State<WaiterHome> {
                                 'role': widget.role}),
                             );
                           } else {
-                            setState(() {
                               // Si la mesa ya está seleccionada, la desmarco
                               if (isSelected) {
                                 // Desmarcar mesa y desbloquear
@@ -97,14 +123,11 @@ class _WaiterHomeState extends State<WaiterHome> {
                                 selectedTables.add(table.id);
                                 tableProvider.lockTable(table.id, widget.uid);
                               }
-                            });
                           }
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: table.groupId == null
-                                ? Colors.green[400]
-                                : Colors.orange[400],
+                            color: backgroundColor,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                                 color: isSelected
