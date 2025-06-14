@@ -8,6 +8,7 @@ import 'package:tfg/provider/orderKitchen_provider_intern.dart';
 import 'package:tfg/provider/order_provider_intern.dart';
 import 'package:tfg/provider/table_provider_intern.dart';
 import 'package:tfg/provider/user_provider_intern.dart';
+import 'package:tfg/services/PredictionService.dart';
 
 import 'navigation/AppRouteInformationParser.dart';
 import 'navigation/AppRouterDelegate.dart';
@@ -15,6 +16,7 @@ import 'navigation/AppRouterDelegate.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await PredictionService().init();
   runApp(MyApp());
 }
 

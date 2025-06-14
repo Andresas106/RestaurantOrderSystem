@@ -49,10 +49,9 @@ class OrderProviderIntern with ChangeNotifier {
           waiterId: waiterId,
           datetime: now,
           state: OrderState.pending,
-          sendToKitchen: false,
-          sendToKitchenIn: null,
-          servedIn: null,
-          dishes: orderDishes);
+          dishes: orderDishes,
+          warned80: false,
+          warnedLate: false);
 
       await FirebaseFirestore.instance.collection('orders').add(newOrder.toMap());
 

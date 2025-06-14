@@ -21,19 +21,20 @@ class OrderKitchenProvider with ChangeNotifier {
         .orderBy('datetime', descending: false)
         .snapshots()
         .listen((snapshot) {
-      final orders = snapshot.docs.map((doc) {
-        return Orders.fromMap(doc.id, doc.data(), allDishes);
-      }).toList();
+          final orders =
+              snapshot.docs.map((doc) {
+                return Orders.fromMap(doc.id, doc.data(), allDishes);
+              }).toList();
 
-
-
-      _pendingOrders = orders;
-      notifyListeners();
-    });
+          _pendingOrders = orders;
+          notifyListeners();
+        });
   }
 
   Future<void> updateOrderState(String orderId, OrderState newState) async {
-    final orderRef = FirebaseFirestore.instance.collection('orders').doc(orderId);
+    final orderRef = FirebaseFirestore.instance
+        .collection('orders')
+        .doc(orderId);
 
     final snapshot = await orderRef.get();
     if (!snapshot.exists) return;
@@ -46,29 +47,25 @@ class OrderKitchenProvider with ChangeNotifier {
 
     // Si el pedido se marca como "listo", actualiza todos los platos también
     if (newState == OrderState.ready) {
-      updatedDishes = updatedDishes.map((dishMap) {
-        return {
-          ...dishMap,
-          'state': OrderDishState.ready.name,
-        };
-      }).toList();
+      updatedDishes =
+          updatedDishes.map((dishMap) {
+            return {...dishMap, 'state': OrderDishState.ready.name};
+          }).toList();
     }
 
-    if(newState == OrderState.completed && groupId != null) {
-      final tableQuery = await FirebaseFirestore.instance
-          .collection('tables')
-          .where('group_id', isEqualTo: groupId)
-          .get();
+    if (newState == OrderState.completed && groupId != null) {
+      final tableQuery =
+          await FirebaseFirestore.instance
+              .collection('tables')
+              .where('group_id', isEqualTo: groupId)
+              .get();
 
       for (final doc in tableQuery.docs) {
         await doc.reference.update({'group_id': null});
       }
     }
 
-    await orderRef.update({
-      'state': newState.name,
-      'dishes': updatedDishes,
-    });
+    await orderRef.update({'state': newState.name, 'dishes': updatedDishes});
 
     notifyListeners();
   }
@@ -78,7 +75,9 @@ class OrderKitchenProvider with ChangeNotifier {
     required int dishId,
     required OrderDishState newState,
   }) async {
-    final orderRef = FirebaseFirestore.instance.collection('orders').doc(orderId);
+    final orderRef = FirebaseFirestore.instance
+        .collection('orders')
+        .doc(orderId);
 
     final snapshot = await orderRef.get();
     if (!snapshot.exists) return;
@@ -86,23 +85,47 @@ class OrderKitchenProvider with ChangeNotifier {
     final data = snapshot.data();
     if (data == null || !data.containsKey('dishes')) return;
 
-    final List<dynamic> updatedDishes = (data['dishes'] as List<dynamic>).map((dishMap) {
-      if (dishMap['dishId'] == dishId) {
-        return {
-          ...dishMap,
-          'state': newState.name,
-        };
-      }
-      return dishMap;
-    }).toList();
+    final List<dynamic> updatedDishes =
+        (data['dishes'] as List<dynamic>).map((dishMap) {
+          if (dishMap['dishId'] == dishId) {
+            return {...dishMap, 'state': newState.name};
+          }
+          return dishMap;
+        }).toList();
 
-    await orderRef.update({
-      'dishes': updatedDishes,
-    });
+    await orderRef.update({'dishes': updatedDishes});
 
     // Opcional: recargar pedidos para reflejar cambios
     // Puedes hacerlo si quieres que se vea instantáneamente
     notifyListeners();
+  }
+
+  Future<void> markOrderWarned80(String orderId) async {
+    await FirebaseFirestore.instance
+        .collection('orders')
+        .doc(orderId)
+        .update({'warned80': true});
+
+    // Actualizar en memoria si el pedido ya está cargado
+    final index = _pendingOrders.indexWhere((o) => o.id == orderId);
+    if (index != -1) {
+      _pendingOrders[index].warned80 = true;
+      notifyListeners();
+    }
+  }
+
+  Future<void> markOrderWarnedLate(String orderId) async {
+    await FirebaseFirestore.instance
+        .collection('orders')
+        .doc(orderId)
+        .update({'warnedLate': true});
+
+    // Actualizar en memoria si el pedido ya está cargado
+    final index = _pendingOrders.indexWhere((o) => o.id == orderId);
+    if (index != -1) {
+      _pendingOrders[index].warnedLate = true;
+      notifyListeners();
+    }
   }
 
   @override

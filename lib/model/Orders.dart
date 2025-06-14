@@ -17,10 +17,10 @@ class Orders {
   final String waiterId;
   final DateTime datetime;
   final OrderState state;
-  final bool sendToKitchen;
-  final DateTime? sendToKitchenIn;
-  final DateTime? servedIn;
   final List<OrderDishes> dishes;
+
+  bool warned80;
+  bool warnedLate;
 
   Orders({
     required this.id,
@@ -28,10 +28,9 @@ class Orders {
     required this.waiterId,
     required this.datetime,
     required this.state,
-    required this.sendToKitchen,
-    this.sendToKitchenIn,
-    this.servedIn,
     required this.dishes,
+    this.warned80 = false,
+    this.warnedLate = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -40,10 +39,9 @@ class Orders {
       'waiterId': waiterId,
       'datetime': Timestamp.fromDate(datetime),
       'state': state.name,
-      'sendToKitchen': sendToKitchen,
-      'sendToKitchenIn': sendToKitchenIn != null ? Timestamp.fromDate(sendToKitchenIn!) : null,
-      'servedIn': servedIn != null ? Timestamp.fromDate(servedIn!) : null,
       'dishes': dishes.map((d) => d.toMap()).toList(),
+      'warned80': warned80,
+      'warnedLate': warnedLate,
     };
   }
 
@@ -61,10 +59,9 @@ class Orders {
       waiterId: map['waiterId'],
       datetime: (map['datetime'] as Timestamp).toDate(),
         state: _orderStateFromString(map['state']),
-      sendToKitchen: map['sendToKitchen'],
-      sendToKitchenIn: map['sendToKitchenIn'] != null ? (map['sendToKitchenIn'] as Timestamp).toDate() : null,
-      servedIn: map['servedIn'] != null ? (map['servedIn'] as Timestamp).toDate() : null,
       dishes: dishList,
+      warned80: map['warned80'] ?? false,
+      warnedLate: map['warnedLate'] ?? false,
     );
   }
 
