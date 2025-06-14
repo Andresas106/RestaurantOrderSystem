@@ -23,7 +23,7 @@ class ChefHome extends StatefulWidget {
 class _ChefHomeState extends State<ChefHome> {
   bool _isLoading = true;
   Map<String, int> _estimatedTimes = {};
-  Timer? _delayCheckTimer;
+  late Timer _delayCheckTimer;
 
   @override
   void initState() {
@@ -65,8 +65,12 @@ class _ChefHomeState extends State<ChefHome> {
         });
       });
     });
+  }
 
-
+  @override
+  void dispose() {
+    _delayCheckTimer.cancel();
+    super.dispose();
   }
 
   void checkOrderDelays(BuildContext context, Orders order, Map<String, int> aiEstimatedTimes,) {

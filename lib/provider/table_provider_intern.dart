@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:tfg/services/PredictionService.dart';
 
 import '../model/Tables.dart';
 
@@ -8,11 +9,14 @@ class TableProviderIntern with ChangeNotifier {
   bool _isLoading = false;
   List<Tables> _selectedTables = [];
   Map<String, String> _groupOrderStatuses = {};
+  Map<String, int> _groupEstimatedTimes = {};
+
 
   List<Tables> get tables => _tables;
   bool get isLoading => _isLoading;
   List<Tables> get selectedTables => _selectedTables;
   Map<String, String> get groupOrderStatuses => _groupOrderStatuses;
+  Map<String, int> get groupEstimatedTimes => _groupEstimatedTimes;
 
   /// Escucha los cambios en tiempo real
   void listenToTables() {
