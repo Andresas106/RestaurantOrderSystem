@@ -50,14 +50,6 @@ class AdminHome extends StatelessWidget {
                 icon: Icons.table_bar,
                 routeName: '/table-management',
               ),
-              const SizedBox(height: 16),
-
-              _buildButton(
-                context,
-                label: 'Manage Orders',
-                icon: Icons.receipt_long,
-                routeName: '/order-management',
-              ),
             ],
           ),
         ),
