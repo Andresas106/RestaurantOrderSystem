@@ -108,7 +108,7 @@ class _ChefHomeState extends State<ChefHome> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            "⏳ An order in the tables $tableString is about to be delayed",
+            "An order in the tables $tableString is about to be delayed",
           ),
           backgroundColor: Colors.orange,
           duration: Duration(seconds: 3),
