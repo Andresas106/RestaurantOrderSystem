@@ -32,6 +32,9 @@ class _NewOrderState extends State<NewOrder> {
 
   Future<void> _initializeOrder() async {
       final tablesProvider = Provider.of<TableProviderIntern>(context, listen: false);
+      final orderProvider = Provider.of<OrderProviderIntern>(context, listen: false);
+
+      orderProvider.clearOrder();
       await tablesProvider.selectTablesOrder(widget.tables);
   }
 

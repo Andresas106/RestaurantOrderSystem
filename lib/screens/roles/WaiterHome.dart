@@ -244,7 +244,7 @@ class _WaiterHomeState extends State<WaiterHome> {
                             color: backgroundColor,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: isSelected ? Colors.blue : Colors.white24,
+                              color: isSelected ? Colors.amberAccent : Colors.white24,
                               width: 3,
                             ),
                             boxShadow: [
